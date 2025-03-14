@@ -1,26 +1,39 @@
 ﻿public class AdPlatform_Repository
 {
-    private List<AdPlatform> _adPlatforms = new List<AdPlatform>();
+    private Dictionary<string, List<AdPlatform>> _adPlatformsByLocation = new Dictionary<string, List<AdPlatform>>();
+
     public void LoadFromFile(string filePath)
     {
+        var tempPlatforms = new Dictionary<string, List<AdPlatform>>();
+
         var lines = File.ReadAllLines(filePath);
-        _adPlatforms.Clear();
 
         foreach (var line in lines)
         {
             var parts = line.Split(':');
             var name = parts[0];
             var locations = parts[1].Split(',').ToList();
-            _adPlatforms.Add(new AdPlatform { Name = name, Locations = locations });
+            var adPlatform = new AdPlatform { Name = name, Locations = locations };
+
+            foreach (var location in locations)
+            {
+                if (!tempPlatforms.ContainsKey(location))
+                {
+                    tempPlatforms[location] = new List<AdPlatform>();
+                }
+                tempPlatforms[location].Add(adPlatform);
+            }
         }
+
+        _adPlatformsByLocation = tempPlatforms;
     }
 
     public List<AdPlatform> GetPlatformsForLocation(string location)
     {
-        return _adPlatforms.Where(ap => ap.Locations.Any(loc => IsLocationMatched(location, loc))).ToList();
-    }
-    private bool IsLocationMatched(string location, string adLocation)
-    {
-        return location.StartsWith(adLocation);
+        if (_adPlatformsByLocation.TryGetValue(location, out var platforms))
+        {
+            return platforms;
+        }
+        return new List<AdPlatform>();
     }
 }
