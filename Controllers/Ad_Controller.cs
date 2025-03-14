@@ -6,7 +6,7 @@ namespace advertisement_API.Controllers
     [Route("api/[controller]")]
     public class AdPlatformController : ControllerBase
     {
-        private static readonly AdPlatformRepository _repository = new AdPlatformRepository();
+        private static readonly AdPlatform_Repository _repository = new AdPlatform_Repository();
 
         [HttpPost("load")]
         public IActionResult LoadAdPlatforms([FromBody] string filePath)

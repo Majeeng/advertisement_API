@@ -1,4 +1,4 @@
-﻿public class AdPlatformRepository
+﻿public class AdPlatform_Repository
 {
     private List<AdPlatform> _adPlatforms = new List<AdPlatform>();
     public void LoadFromFile(string filePath)
